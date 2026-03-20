@@ -100,7 +100,7 @@ To ensure the web application has a reliable entry point that survives instance 
 
 ## Step 3: Provisioning the VM
 
-With the networking foundation in place, we provision the compute resource. We define a single `e2-small` Virtual Machine running Ubuntu 24.04. We attach it to the nested subnet using the cross-resource path reference (`ref:vpc1/subnet1`), and we expose it to the internet by mapping our Static IP (`ref:pip1`) into the `access_configs` block. 
+With the networking foundation in place, we provision the compute resource. We define a single `e2-micro` Virtual Machine running Ubuntu 24.04. We attach it to the nested subnet using the cross-resource path reference (`ref:vpc1/subnet1`), and we expose it to the internet by mapping our Static IP (`ref:pip1`) into the `access_configs` block. 
 
 ```yaml
 # ... (Continuing at the root resources level) ...
@@ -108,7 +108,7 @@ With the networking foundation in place, we provision the compute resource. We d
   - type: compute.v1.instance
     name: vm1
     props:
-      machine_type: machineTypes/e2-small
+      machine_type: machineTypes/e2-micro
       disks:
         - boot: true
           auto_delete: true
@@ -171,18 +171,19 @@ resources:
   - type: compute.v1.instance
     name: vm1
     props:
-      machine_type: machineTypes/e2-small
+      machine_type: machineTypes/e2-micro
       disks:
         - boot: true
           auto_delete: true
           initialize_params:
             disk_size_gb: 30
             disk_type: diskTypes/pd-standard
-            source_image: projects/ubuntu-os-cloud/global/images/family/ubuntu-2404-lts
+            source_image: projects/ubuntu-os-cloud/global/images/ubuntu-minimal-2404-noble-amd64-v20260219
       network_interfaces:
         - subnetwork: "ref:vpc1/subnet1"
           access_configs:
             - type: ONE_TO_ONE_NAT
               name: External NAT
-              nat_ip: "ref:pip1"
+              nat_ip: "ref:pip1.address"
+              network_tier: STANDARD
 ```
