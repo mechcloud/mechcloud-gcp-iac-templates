@@ -144,15 +144,23 @@ resources:
           ip_cidr_range: "10.0.1.0/24"
           
       - type: compute.v1.firewall
-        name: fw-allow-web-ssh
+        name: fw-allow-ssh
         props:
           allowed:
             - ip_protocol: tcp
               ports:
                 - "22"
-                - "80"
           source_ranges:
             - "{{CURRENT_IP}}/32"
+
+      - type: compute.v1.firewall
+        name: fw-allow-web
+        props:
+          allowed:
+            - ip_protocol: tcp
+              ports:
+                - "80"
+          source_ranges:
             - "0.0.0.0/0"
 
   - type: compute.v1.address
