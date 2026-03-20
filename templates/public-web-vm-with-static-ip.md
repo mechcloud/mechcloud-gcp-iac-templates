@@ -62,18 +62,26 @@ resources:
         props:
           ip_cidr_range: "10.0.1.0/24"
           
-      # 3. Security rules via Firewall (Network link is inferred via nesting)
+      # 3a. Security rule for restricted SSH access
       - type: compute.v1.firewall
-        name: fw-allow-web-ssh
+        name: fw-allow-ssh
         props:
           allowed:
             - ip_protocol: tcp
               ports:
                 - "22"
+          source_ranges:
+            - "{{CURRENT_IP}}/32"
+
+      # 3b. Security rule for open HTTP access
+      - type: compute.v1.firewall
+        name: fw-allow-web
+        props:
+          allowed:
+            - ip_protocol: tcp
+              ports:
                 - "80"
           source_ranges:
-            # Restrict SSH to current IP, open HTTP to the world
-            - "{{CURRENT_IP}}/32"
             - "0.0.0.0/0"
 ```
 
